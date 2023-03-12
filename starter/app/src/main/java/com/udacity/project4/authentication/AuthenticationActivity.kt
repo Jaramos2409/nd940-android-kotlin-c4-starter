@@ -1,8 +1,25 @@
 package com.udacity.project4.authentication
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import com.firebase.ui.auth.AuthMethodPickerLayout
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
+import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
+import com.udacity.project4.databinding.ActivityAuthenticationBinding
+import com.udacity.project4.firebase.AuthenticationState
+import com.udacity.project4.locationreminders.AuthenticationViewModel
+import com.udacity.project4.locationreminders.RemindersActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+
+private const val TAG = "AuthenticationActivity"
 
 /**
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the
@@ -10,15 +27,73 @@ import com.udacity.project4.R
  */
 class AuthenticationActivity : AppCompatActivity() {
 
+    private val authenticationViewModel by viewModel<AuthenticationViewModel>()
+    private lateinit var binding: ActivityAuthenticationBinding
+
+    private var startActivityIntent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            run {
+                // Add same code that you want to add in onActivityResult method
+                val response =
+                    IdpResponse.fromResultIntent(result.data)
+                if (result.resultCode == Activity.RESULT_OK) {
+                    Log.i(
+                        TAG,
+                        "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!"
+                    )
+                } else {
+                    Log.i(TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authentication)
-//         TODO: Implement the create account and sign in using FirebaseUI, use sign in using email and sign in using Google
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_authentication)
 
-//          TODO: If the user was authenticated, send him to RemindersActivity
+        authenticationViewModel.authenticationState.observe(this)
+        { authenticationState ->
+            when (authenticationState) {
+                AuthenticationState.AUTHENTICATED -> startActivity(
+                    Intent(
+                        this,
+                        RemindersActivity::class.java
+                    )
+                )
+                AuthenticationState.UNAUTHENTICATED -> Log.i(
+                    TAG,
+                    "Not Authenticated"
+                )
+                else -> Log.e(
+                    TAG,
+                    "New $authenticationState state that doesn't require any UI change"
+                )
+            }
+        }
 
-//          TODO: a bonus is to customize the sign in flow to look nice using :
-        //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
+        binding.authButton.setOnClickListener { launchSignInFlow() }
+    }
 
+    private fun launchSignInFlow() {
+        val customLayout =
+            AuthMethodPickerLayout.Builder(R.layout.activity_authentication_choose_provider)
+                .setGoogleButtonId(R.id.sign_in_with_google_button)
+                .setEmailButtonId(R.id.sign_in_with_email_button)
+                .build()
+
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+
+        startActivityIntent.launch(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setAuthMethodPickerLayout(customLayout)
+                .setTheme(R.style.CustomFirebaseUi)
+                .setIsSmartLockEnabled(false)
+                .build()
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.udacity.project4
 
 import android.app.Application
+import com.udacity.project4.locationreminders.AuthenticationViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
@@ -20,6 +21,9 @@ class MyApp : Application() {
          * use Koin Library as a service locator
          */
         val myModule = module {
+            viewModel {
+                AuthenticationViewModel()
+            }
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel {
                 RemindersListViewModel(
