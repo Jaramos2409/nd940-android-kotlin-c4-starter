@@ -38,7 +38,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".authentication.AuthenticationActivity"
+            android:name=".RoutingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +46,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".authentication.AuthenticationActivity"
+            android:exported="true" />
+
         <activity
             android:name=".locationreminders.RemindersActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <receiver
             android:name=".locationreminders.geofence.GeofenceBroadcastReceiver"

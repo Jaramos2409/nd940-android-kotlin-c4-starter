@@ -37,5 +37,9 @@
         android:name="com.udacity.project4.authentication.AuthenticationActivity"
         android:label="activity_authentication"
         tools:layout="@layout/activity_authentication" />
+    <activity
+        android:id="@+id/routingActivity"
+        android:name="com.udacity.project4.RoutingActivity"
+        android:label="RoutingActivity" />
 
 </navigation>

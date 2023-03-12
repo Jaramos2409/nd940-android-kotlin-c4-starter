@@ -15,5 +15,4 @@ class AuthenticationViewModel : ViewModel() {
         }
     }
 
-
 }
