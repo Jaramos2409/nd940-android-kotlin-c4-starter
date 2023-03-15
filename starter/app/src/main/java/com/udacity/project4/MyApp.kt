@@ -11,11 +11,18 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import timber.log.Timber
+import timber.log.Timber.Forest.plant
+
 
 class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            plant(Timber.DebugTree())
+        }
 
         /**
          * use Koin Library as a service locator
@@ -48,4 +55,5 @@ class MyApp : Application() {
             modules(listOf(myModule))
         }
     }
+
 }

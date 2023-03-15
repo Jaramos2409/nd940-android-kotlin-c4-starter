@@ -3,7 +3,6 @@ package com.udacity.project4.authentication
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -17,9 +16,8 @@ import com.udacity.project4.firebase.AuthenticationState
 import com.udacity.project4.locationreminders.AuthenticationViewModel
 import com.udacity.project4.locationreminders.RemindersActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
-
-private const val TAG = "AuthenticationActivity"
 
 /**
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the
@@ -37,12 +35,9 @@ class AuthenticationActivity : AppCompatActivity() {
                 val response =
                     IdpResponse.fromResultIntent(result.data)
                 if (result.resultCode == Activity.RESULT_OK) {
-                    Log.i(
-                        TAG,
-                        "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!"
-                    )
+                    Timber.i("Successfully signed in user " + FirebaseAuth.getInstance().currentUser?.displayName + "!")
                 } else {
-                    Log.i(TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
+                    Timber.i("Sign in unsuccessful " + response?.error?.errorCode)
                 }
             }
         }
@@ -60,14 +55,8 @@ class AuthenticationActivity : AppCompatActivity() {
                         RemindersActivity::class.java
                     )
                 )
-                AuthenticationState.UNAUTHENTICATED -> Log.i(
-                    TAG,
-                    "Not Authenticated"
-                )
-                else -> Log.e(
-                    TAG,
-                    "New $authenticationState state that doesn't require any UI change"
-                )
+                AuthenticationState.UNAUTHENTICATED -> Timber.i("Not Authenticated")
+                else -> Timber.e("New $authenticationState state that doesn't require any UI change")
             }
         }
 

@@ -2,15 +2,13 @@ package com.udacity.project4
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.firebase.AuthenticationState
 import com.udacity.project4.locationreminders.AuthenticationViewModel
 import com.udacity.project4.locationreminders.RemindersActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
-private const val TAG = "RoutingActivity"
+import timber.log.Timber
 
 class RoutingActivity : AppCompatActivity(R.layout.activity_rounting) {
 
@@ -34,9 +32,10 @@ class RoutingActivity : AppCompatActivity(R.layout.activity_rounting) {
                         AuthenticationActivity::class.java
                     )
                 )
-                else -> Log.e(
-                    TAG,
-                    "New $authenticationState state that doesn't require any UI change"
+                else -> Timber.e(
+                    "%s state that doesn't require any UI change",
+                    "New %s",
+                    authenticationState
                 )
             }
         }

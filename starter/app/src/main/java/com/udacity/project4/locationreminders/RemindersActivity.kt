@@ -2,7 +2,6 @@ package com.udacity.project4.locationreminders
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,8 +9,7 @@ import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.firebase.AuthenticationState
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
-private const val TAG = "RemindersActivity"
+import timber.log.Timber
 
 /**
  * The RemindersActivity that holds the reminders fragments
@@ -23,25 +21,19 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i(TAG, "Inside of onCreate for RemindersActivity")
+        Timber.i("Inside of onCreate for RemindersActivity")
 
         authenticationViewModel.authenticationState.observe(this)
         { authenticationState ->
             when (authenticationState) {
-                AuthenticationState.AUTHENTICATED -> Log.i(
-                    TAG,
-                    "Authenticated"
-                )
+                AuthenticationState.AUTHENTICATED -> Timber.i("Authenticated")
                 AuthenticationState.UNAUTHENTICATED -> startActivity(
                     Intent(
                         this,
                         AuthenticationActivity::class.java
                     )
                 )
-                else -> Log.e(
-                    TAG,
-                    "New $authenticationState state that doesn't require any UI change"
-                )
+                else -> Timber.e("New $authenticationState state that doesn't require any UI change")
             }
         }
     }

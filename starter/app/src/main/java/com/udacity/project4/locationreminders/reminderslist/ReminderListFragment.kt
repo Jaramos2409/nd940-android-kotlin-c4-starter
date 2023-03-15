@@ -1,16 +1,11 @@
 package com.udacity.project4.locationreminders.reminderslist
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
-import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -20,22 +15,11 @@ import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-private const val TAG = "ReminderListFragment"
-
 class ReminderListFragment : BaseFragment() {
     //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
-
     private lateinit var binding: FragmentRemindersBinding
-
-    private val requestMultiplePermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            permissions.entries.forEach {
-                val permission = it.key
-                val isGranted = it.value
-                Log.i(TAG, "$permission is ${if (isGranted) "granted" else "denied"}")
-            }
-        }
+    private lateinit var layout: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +32,7 @@ class ReminderListFragment : BaseFragment() {
             )
         binding.viewModel = _viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        layout = binding.mainLayout
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -71,21 +56,7 @@ class ReminderListFragment : BaseFragment() {
 
         binding.refreshLayout.setOnRefreshListener { _viewModel.loadReminders() }
 
-        askForPermissions()
-
         return binding.root
-    }
-
-    private fun askForPermissions() {
-        val listOfPermissions = mutableListOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            listOfPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
-
-        requestMultiplePermissions.launch(listOfPermissions.toTypedArray())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,24 +89,6 @@ class ReminderListFragment : BaseFragment() {
 
 //        setup the recycler view using the extension function
         binding.reminderssRecyclerView.setup(adapter)
-    }
-
-
-    private fun View.showSnackbar(
-        view: View,
-        msg: String,
-        length: Int,
-        actionMessage: CharSequence?,
-        action: (View) -> Unit
-    ) {
-        val snackBar = Snackbar.make(view, msg, length)
-        if (actionMessage != null) {
-            snackBar.setAction(actionMessage) {
-                action(this)
-            }.show()
-        } else {
-            snackBar.show()
-        }
     }
 
 }

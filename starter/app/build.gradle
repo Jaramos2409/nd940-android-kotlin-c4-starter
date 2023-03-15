@@ -48,18 +48,19 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "androidx.legacy:legacy-support-v4:$androidXLegacySupport"
     implementation "androidx.annotation:annotation:$androidXAnnotations"
-
+    implementation "androidx.activity:activity-ktx:$activityVersion"
     implementation "androidx.cardview:cardview:$cardVersion"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintVersion"
+    implementation "androidx.preference:preference-ktx:$preferenceVersion"
+    implementation "com.jakewharton.timber:timber:$timberVersion"
 
     implementation 'com.google.code.gson:gson:2.9.0'
 
     // Architecture Components
     //Navigation dependencies
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0-alpha07'
     implementation "androidx.lifecycle:lifecycle-common-java8:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$archLifecycleVersion"
@@ -78,7 +79,6 @@ dependencies {
     //Koin
     implementation "io.insert-koin:koin-android:$koinVersion"
     implementation "io.insert-koin:koin-androidx-viewmodel:$koinVersion"
-
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:$junitVersion"
