@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.data.dto
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import java.util.*
 
 /**
@@ -25,3 +26,27 @@ data class ReminderDTO(
     @ColumnInfo(name = "longitude") var longitude: Double?,
     @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString()
 )
+
+fun ReminderDTO.asDomainModel(): ReminderDataItem {
+    return ReminderDataItem(
+        title = this.title,
+        description = this.description,
+        location = this.location,
+        latitude = this.latitude,
+        longitude = this.longitude,
+        id = this.id
+    )
+}
+
+fun List<ReminderDTO>.asListOfDomainModel(): List<ReminderDataItem> {
+    return map {
+        ReminderDataItem(
+            title = it.title,
+            description = it.description,
+            location = it.location,
+            latitude = it.latitude,
+            longitude = it.longitude,
+            id = it.id
+        )
+    }
+}

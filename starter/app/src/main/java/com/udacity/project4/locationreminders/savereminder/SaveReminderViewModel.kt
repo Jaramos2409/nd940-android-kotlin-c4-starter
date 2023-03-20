@@ -70,14 +70,15 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
             )
             showLoading.value = false
             showToast.value = app.getString(R.string.reminder_saved)
-            navigationCommand.value = NavigationCommand.Back
+            navigationCommand.value =
+                NavigationCommand.BackTo(R.id.reminderListFragment)
         }
     }
 
     /**
      * Validate the entered data and show error to the user if there's any invalid data
      */
-    private fun validateEnteredData(reminderData: ReminderDataItem): Boolean {
+    fun validateEnteredData(reminderData: ReminderDataItem): Boolean {
         if (reminderData.title.isNullOrEmpty()) {
             showSnackBarInt.value = R.string.err_enter_title
             return false
@@ -87,6 +88,7 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
             showSnackBarInt.value = R.string.err_select_location
             return false
         }
+
         return true
     }
 

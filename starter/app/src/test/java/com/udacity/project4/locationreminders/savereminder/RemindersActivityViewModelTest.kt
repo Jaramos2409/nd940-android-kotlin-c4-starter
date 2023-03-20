@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-class SaveReminderViewModelTest {
+class RemindersActivityViewModelTest {
 
 
     //TODO: provide testing to the SaveReminderView and its live data objects

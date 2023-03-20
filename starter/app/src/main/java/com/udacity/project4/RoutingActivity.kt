@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.udacity.project4.authentication.AuthenticationActivity
+import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.firebase.AuthenticationState
-import com.udacity.project4.locationreminders.AuthenticationViewModel
 import com.udacity.project4.locationreminders.RemindersActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber

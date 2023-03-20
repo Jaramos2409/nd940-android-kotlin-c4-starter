@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityAuthenticationBinding
 import com.udacity.project4.firebase.AuthenticationState
-import com.udacity.project4.locationreminders.AuthenticationViewModel
 import com.udacity.project4.locationreminders.RemindersActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
