@@ -2,12 +2,15 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.os.Build
+import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.project4.base.BaseRecyclerViewAdapter
+import java.io.Serializable
 
 
 /**
@@ -56,3 +59,13 @@ fun View.fadeOut() {
         }
     })
 }
+
+@Suppress("DEPRECATION")
+inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        getSerializable(key, T::class.java)
+    } else {
+        getSerializable(key) as? T
+    }
+}
+

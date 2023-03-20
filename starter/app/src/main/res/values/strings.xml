@@ -49,4 +49,5 @@
     <string name="image_of_a_person_pointing_at_a_specific_location_on_a_laid_out_crinkled_up_paper_map">Image of a person pointing at a specific location on a laid out, crinkled up, paper map.</string>
     <string name="sign_in_with_email">Sign in with email</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="description">Description:</string>
 </resources>
