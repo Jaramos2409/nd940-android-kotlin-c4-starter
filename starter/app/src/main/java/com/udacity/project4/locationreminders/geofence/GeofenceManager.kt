@@ -13,10 +13,7 @@ import com.udacity.project4.locationreminders.data.dto.asListOfDomainModel
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.PermissionUtils
 import com.udacity.project4.utils.getBroadcast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 class GeofenceManager(private val context: Context, private val dataSource: ReminderDataSource) {
@@ -26,7 +23,8 @@ class GeofenceManager(private val context: Context, private val dataSource: Remi
     fun addGeofencesFromDatabase() = geofenceManagerScope.launch {
         when (val fetchedActiveReminders = dataSource.getReminders()) {
             is com.udacity.project4.locationreminders.data.dto.Result.Success -> {
-                addGeofences(fetchedActiveReminders.data.asListOfDomainModel())
+                if (fetchedActiveReminders.data.isNotEmpty())
+                    addGeofences(fetchedActiveReminders.data.asListOfDomainModel())
             }
             else -> {
                 return@launch

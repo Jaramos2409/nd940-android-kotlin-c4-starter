@@ -1,18 +1,7 @@
 package com.udacity.project4.authentication
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
-import com.udacity.project4.firebase.AuthenticationState
-import com.udacity.project4.firebase.FirebaseUserLiveData
 
-class AuthenticationViewModel : ViewModel() {
-
-    val authenticationState = FirebaseUserLiveData().map { user ->
-        if (user != null) {
-            AuthenticationState.AUTHENTICATED
-        } else {
-            AuthenticationState.UNAUTHENTICATED
-        }
-    }
-
+class AuthenticationViewModel(authenticationDataSource: AuthenticationDataSource) : ViewModel() {
+    val authenticationState = authenticationDataSource.getAuthenticationState()
 }

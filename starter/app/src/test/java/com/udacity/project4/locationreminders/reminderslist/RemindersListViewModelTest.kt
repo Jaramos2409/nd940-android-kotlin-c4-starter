@@ -49,8 +49,14 @@ class RemindersListViewModelTest {
         )
     }
 
+    @After
+    fun tearDownAndCleanup() = runBlocking {
+        stopKoin()
+        fakeDataSource.deleteAllReminders()
+    }
+
     @Test
-    fun `Test loadReminders() when there are reminders expected in the data source`() = runTest {
+    fun `loadReminders() when there are reminders expected in the data source`() = runTest {
         val title = "Example Title of a Reminder #1"
         val description = "Example description for a reminder"
         val location = "Example location"
@@ -92,7 +98,7 @@ class RemindersListViewModelTest {
 
 
     @Test
-    fun `Test loadReminders() when there are no reminders expected in the data source and should produce error in snackbar`() =
+    fun `loadReminders() when there are no reminders expected in the data source and should produce error in snackbar`() =
         runTest {
             // Trigger loading of new reminders:
             remindersListViewModel.loadReminders()
@@ -104,7 +110,7 @@ class RemindersListViewModelTest {
         }
 
     @Test
-    fun `Test showLoading value updates as expected when loadReminders is called`() = runTest {
+    fun `loadReminders() should update showLoading value as expected`() = runTest {
         val title = "Example Title of a Reminder #1"
         val description = "Example description for a reminder"
         val location = "Example location"
@@ -137,7 +143,7 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun `Test invalidateShowNoData sets showNoData to true when remindersList is empty`() =
+    fun `invalidateShowNoData() sets showNoData to true when remindersList is empty`() =
         runTest {
             // Trigger loading of new reminders:
             remindersListViewModel.loadReminders()
@@ -149,7 +155,7 @@ class RemindersListViewModelTest {
         }
 
     @Test
-    fun `Test invalidateShowNoData sets showNoData to false when remindersList is not empty`() =
+    fun `invalidateShowNoData() sets showNoData to false when remindersList is not empty`() =
         runTest {
             val title = "Example Title of a Reminder #1"
             val description = "Example description for a reminder"
@@ -178,11 +184,5 @@ class RemindersListViewModelTest {
             val actualShowNoDataValue = remindersListViewModel.showNoData.getOrAwaitValue()
             assertThat(actualShowNoDataValue, `is`(false))
         }
-
-    @After
-    fun tearDownAndCleanup() = runBlocking {
-        stopKoin()
-        fakeDataSource.deleteAllReminders()
-    }
 
 }

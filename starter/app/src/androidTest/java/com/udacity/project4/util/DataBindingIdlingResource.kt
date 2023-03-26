@@ -18,7 +18,6 @@ package com.udacity.project4.util
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.ActivityScenario
@@ -106,8 +105,8 @@ fun DataBindingIdlingResource.monitorActivity(
 /**
  * Sets the fragment from a [FragmentScenario] to be used from [DataBindingIdlingResource].
  */
-fun DataBindingIdlingResource.monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
-    fragmentScenario.onFragment {
-        this.activity = it.requireActivity()
-    }
-}
+//fun DataBindingIdlingResource.monitorFragment(fragmentScenario: FragmentScenario<out Fragment>) {
+//    fragmentScenario.onFragment {
+//        this.activity = it.requireActivity()
+//    }
+//}

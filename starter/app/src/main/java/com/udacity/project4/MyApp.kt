@@ -5,6 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.udacity.project4.authentication.AuthenticationDataSource
+import com.udacity.project4.authentication.AuthenticationRepository
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
@@ -35,6 +37,7 @@ class MyApp : Application(), KoinComponent {
          * use Koin Library as a service locator
          */
         val myModule = module {
+            single<AuthenticationDataSource> { AuthenticationRepository() }
             single<ReminderDataSource> { RemindersLocalRepository(get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
             //Declare singleton definitions to be later injected using by inject()
@@ -52,7 +55,7 @@ class MyApp : Application(), KoinComponent {
                 )
             }
             viewModel {
-                AuthenticationViewModel()
+                AuthenticationViewModel(get())
             }
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel {

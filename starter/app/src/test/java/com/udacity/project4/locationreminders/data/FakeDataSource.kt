@@ -19,7 +19,9 @@ class FakeDataSource(private var reminders: HashMap<String, ReminderDTO>? = hash
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
-        reminders?.let { return Result.Success(it[id] as ReminderDTO) }
+        if (reminders?.isNotEmpty() == true) {
+            return Result.Success(reminders!![id] as ReminderDTO)
+        }
         return Result.Error("Reminder $id not found.")
     }
 

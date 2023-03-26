@@ -22,17 +22,13 @@ android {
         }
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     testOptions.unitTests {
         includeAndroidResources = true
         returnDefaultValues = true
     }
 
-    //dataBinding {
-    //    enabled = true
-    //    enabledForTests = true
-    //}
     buildFeatures {
         dataBinding true
     }
@@ -70,6 +66,7 @@ dependencies {
     //Room dependencies
     implementation "androidx.room:room-ktx:$roomVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
+    testImplementation 'junit:junit:4.12'
     kapt "androidx.room:room-compiler:$roomVersion"
 
     //Coroutines Dependencies
@@ -111,10 +108,8 @@ dependencies {
     debugImplementation "androidx.fragment:fragment-testing:$fragmentVersion"
     implementation "androidx.test:core:$androidXTestCoreVersion"
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
-    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
+    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
     androidTestImplementation('io.insert-koin:koin-test:2.0.1') { exclude group: 'org.mockito' }
-
 
     //Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesLocationVersion"

@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
+
 /**
  * This class observes the current FirebaseUser. If there is no logged in user, FirebaseUser will
  * be null.
