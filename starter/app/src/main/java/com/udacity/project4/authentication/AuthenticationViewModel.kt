@@ -3,5 +3,5 @@ package com.udacity.project4.authentication
 import androidx.lifecycle.ViewModel
 
 class AuthenticationViewModel(authenticationDataSource: AuthenticationDataSource) : ViewModel() {
-    val authenticationState = authenticationDataSource.getAuthenticationState()
+    val authenticationState = authenticationDataSource.authenticationState
 }

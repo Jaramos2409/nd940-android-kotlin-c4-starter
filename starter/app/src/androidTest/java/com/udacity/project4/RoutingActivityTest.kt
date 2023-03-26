@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
 import com.udacity.project4.authentication.AuthenticationDataSource
+import com.udacity.project4.authentication.FakeAuthenticationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Rule
@@ -35,7 +36,7 @@ class RoutingActivityTest {
         GrantPermissionRule.grant(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
 
     @Test
-    fun routingActivityTest_Should_Navigate_To_RemindersListFragment_If_AuthenticationStatus_Is_AUTHENTICATED() {
+    fun routingActivity_should_navigate_to_remindersListFragment_if_authenticationStatus_is_AUTHENTICATED() {
         loadKoinModules(
             module {
                 single<AuthenticationDataSource> { FakeAuthenticationRepository(shouldAuthenticate = true) }
@@ -49,7 +50,7 @@ class RoutingActivityTest {
     }
 
     @Test
-    fun routingActivityTest_Should_Navigate_To_AuthenticationActivity_If_AuthenticationStatus_Is_UNAUTHENTICATED() {
+    fun routingActivity_should_navigate_to_authenticationActivity_if_authenticationStatus_Is_UNAUTHENTICATED() {
         loadKoinModules(
             module {
                 single<AuthenticationDataSource> { FakeAuthenticationRepository(shouldAuthenticate = false) }

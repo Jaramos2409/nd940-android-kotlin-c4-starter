@@ -37,6 +37,7 @@
     <string name="notification_permission_granted">Notification access is required to receive reminder notifications.</string>
     <string name="location_permission_required">Location access is required to make reminder location feature easier to use.</string>
     <string name="ok">OK</string>
+    <string name="sign_in_unsuccessful">Sign in unsuccessful</string>
 
     <!-- Error strings -->
     <string name="geofence_unknown_error">Unknown error: the Geofence service is not available now.</string>

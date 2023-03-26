@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.firebase.ui.auth.AuthMethodPickerLayout
@@ -27,16 +28,22 @@ class AuthenticationActivity : AppCompatActivity() {
     private val authenticationViewModel by viewModel<AuthenticationViewModel>()
     private lateinit var binding: ActivityAuthenticationBinding
 
-    private var startActivityIntent =
+    private var startFirebaseActivityIntent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             run {
-                // Add same code that you want to add in onActivityResult method
                 val response =
                     IdpResponse.fromResultIntent(result.data)
                 if (result.resultCode == Activity.RESULT_OK) {
                     Timber.i("Successfully signed in user " + FirebaseAuth.getInstance().currentUser?.displayName + "!")
                 } else {
                     Timber.i("Sign in unsuccessful " + response?.error?.errorCode)
+                    AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.sign_in_unsuccessful))
+                        .setPositiveButton("Dismiss") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
                 }
             }
         }
@@ -54,7 +61,9 @@ class AuthenticationActivity : AppCompatActivity() {
                         RemindersActivity::class.java
                     )
                 )
-                AuthenticationState.UNAUTHENTICATED -> Timber.i("Not Authenticated")
+                AuthenticationState.UNAUTHENTICATED -> {
+                    Timber.i("Not Authenticated")
+                }
                 else -> Timber.e("New $authenticationState state that doesn't require any UI change")
             }
         }
@@ -74,7 +83,7 @@ class AuthenticationActivity : AppCompatActivity() {
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
-        startActivityIntent.launch(
+        startFirebaseActivityIntent.launch(
             AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)

@@ -4,5 +4,8 @@ import androidx.lifecycle.LiveData
 import com.udacity.project4.firebase.AuthenticationState
 
 interface AuthenticationDataSource {
-    fun getAuthenticationState(): LiveData<AuthenticationState>
+
+    var authenticationState: LiveData<AuthenticationState>
+
+    fun checkAuthenticationState()
 }
