@@ -8,4 +8,6 @@ interface AuthenticationDataSource {
     var authenticationState: LiveData<AuthenticationState>
 
     fun checkAuthenticationState()
+
+    fun signOut()
 }

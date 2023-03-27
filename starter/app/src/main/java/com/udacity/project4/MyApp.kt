@@ -37,7 +37,7 @@ class MyApp : Application(), KoinComponent {
          * use Koin Library as a service locator
          */
         val myModule = module {
-            single<AuthenticationDataSource> { AuthenticationRepository() }
+            single<AuthenticationDataSource> { AuthenticationRepository(get()) }
             single<ReminderDataSource> { RemindersLocalRepository(get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
             //Declare singleton definitions to be later injected using by inject()

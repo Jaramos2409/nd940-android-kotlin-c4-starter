@@ -10,11 +10,9 @@ class LocationReminderLocationFeatureDirectionsAlertDialog(private val context: 
     fun showIfNecessary() {
         if (!sharedPreferences.getBoolean("feature_directions_shown", false)) {
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("Directions:")
+            builder.setTitle(context.getString(R.string.directions))
             builder.setMessage(
-                """
-                To select a location for your reminder tap on any landmark, point of interest or existing marker.
-            """.trimIndent()
+                context.getString(R.string.map_directions_message).trimIndent()
             )
             builder.setPositiveButton("OK") { _, _ ->
                 sharedPreferences.edit().putBoolean("feature_directions_shown", true).apply()

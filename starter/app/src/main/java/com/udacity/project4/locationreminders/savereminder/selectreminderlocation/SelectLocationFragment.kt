@@ -31,7 +31,6 @@ import java.util.*
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
-    //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSelectLocationBinding
     private lateinit var supportMapFragment: SupportMapFragment
@@ -104,6 +103,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+        this.googleMap.setContentDescription(getString(R.string.map_has_loaded))
         setMapStyle(this.googleMap)
         setPoiClick(this.googleMap)
 

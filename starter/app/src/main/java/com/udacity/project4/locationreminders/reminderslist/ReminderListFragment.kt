@@ -5,8 +5,8 @@ import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
-import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
+import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
@@ -18,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ReminderListFragment : BaseFragment() {
 
     override val _viewModel: RemindersListViewModel by viewModel()
+    private val authenticationViewModel by viewModel<AuthenticationViewModel>()
     private lateinit var binding: FragmentRemindersBinding
     private lateinit var layout: View
 
@@ -40,10 +41,9 @@ class ReminderListFragment : BaseFragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.logout -> {
-                        AuthUI.getInstance().signOut(requireContext())
+                        authenticationViewModel.signOutOfAuth()
                         true
                     }
                     else -> false
@@ -88,7 +88,7 @@ class ReminderListFragment : BaseFragment() {
         }
 
 //        setup the recycler view using the extension function
-        binding.reminderssRecyclerView.setup(adapter)
+        binding.remindersRecyclerView.setup(adapter)
     }
 
 }

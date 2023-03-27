@@ -26,6 +26,11 @@ class FakeAuthenticationRepository(shouldAuthenticate: Boolean = false) :
         }
     }
 
+    override fun signOut() {
+        updateWhetherShouldAuthenticate(false)
+        checkAuthenticationState()
+    }
+
     fun updateWhetherShouldAuthenticate(shouldAuthenticate: Boolean) {
         _shouldAuthenticate.value = shouldAuthenticate
     }

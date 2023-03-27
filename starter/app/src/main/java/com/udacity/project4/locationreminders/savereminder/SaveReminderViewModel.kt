@@ -97,8 +97,8 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
     fun getSelectedMarker() = _selectedMarker.value
 
     fun setReminderLocationData(
-        selectedMarker: Marker,
-        selectedPOI: PointOfInterest,
+        selectedMarker: Marker? = null,
+        selectedPOI: PointOfInterest? = null,
         selectedLocationName: String,
         selectedLatitude: Double,
         selectedLongitude: Double

@@ -74,7 +74,7 @@ class AuthenticationActivityTest {
     fun authenticationActivity_sign_in_and_navigate_to_remindersActivity() {
         setupFakeAuthenticationRepository()
 
-        ActivityScenario.launch(RoutingActivity::class.java).use {
+        ActivityScenario.launch(AuthenticationActivity::class.java).use {
             dataBindingIdlingResource.monitorActivity(it)
 
             // Using Espresso Intents to stub out interactions with FirebaseUI so we can focus on testing our code
@@ -127,7 +127,7 @@ class AuthenticationActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(click())
 
-            onView(withText(R.string.sign_in_unsuccessful))
+            onView(withText("Directions"))
                 .inRoot(isDialog())
                 .check(matches(isDisplayed()))
         }
