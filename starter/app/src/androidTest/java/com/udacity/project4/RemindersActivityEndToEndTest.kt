@@ -15,7 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
 import com.udacity.project4.authentication.AuthenticationDataSource
-import com.udacity.project4.authentication.FakeAuthenticationRepository
+import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
 import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
@@ -35,7 +35,7 @@ import org.koin.test.inject
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class RemindersActivityNavigationTests : KoinTest {
+class RemindersActivityEndToEndTest : KoinTest {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var fakeAuthenticationRepository: FakeAuthenticationRepository

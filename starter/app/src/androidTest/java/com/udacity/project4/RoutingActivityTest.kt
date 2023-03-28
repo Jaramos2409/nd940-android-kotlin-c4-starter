@@ -10,7 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
 import com.udacity.project4.authentication.AuthenticationDataSource
-import com.udacity.project4.authentication.FakeAuthenticationRepository
+import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Rule

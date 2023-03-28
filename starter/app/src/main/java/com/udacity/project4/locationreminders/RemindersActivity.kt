@@ -45,7 +45,7 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
                 Timber.i("Permissions were not granted.")
                 Toast.makeText(
                     this,
-                    "Feature may not work properly without all permission granted.",
+                    R.string.feature_may_not_work_properly,
                     Toast.LENGTH_LONG
                 ).show()
             }

@@ -23,6 +23,7 @@ import com.firebase.ui.auth.KickoffActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.RoutingActivity
+import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi

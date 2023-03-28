@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 
 object PermissionUtils {
 
@@ -25,21 +24,13 @@ object PermissionUtils {
         activity: Activity,
         listOfPermissions: List<String>
     ): Boolean =
-        listOfPermissions.indexOfFirst { permission ->
+        listOfPermissions.any { permission ->
             activity.shouldShowRequestPermissionRationale(permission)
-        } != -1
-
-    fun checkIfShouldShowRequestRationale(
-        fragment: Fragment,
-        listOfPermissions: List<String>
-    ): Boolean =
-        listOfPermissions.indexOfFirst { permission ->
-            fragment.shouldShowRequestPermissionRationale(permission)
-        } != -1
+        }
 
     fun arePermissionsGranted(context: Context, listOfPermissions: List<String>): Boolean =
-        listOfPermissions.indexOfFirst { permission ->
+        listOfPermissions.all { permission ->
             hasPermission(context, permission)
-        } != -1
+        }
 
 }

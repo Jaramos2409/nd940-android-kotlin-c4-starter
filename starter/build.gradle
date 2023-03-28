@@ -56,7 +56,7 @@ ext {
     truthVersion = '0.45'
     junitVersion = '4.13.2'
     androidXTestCoreVersion = '1.5.0'
-    robolectricVersion = '4.9'
+    robolectricVersion = '4.9.2'
     androidXTestExtKotlinRunnerVersion = '1.1.5'
     archTestingVersion = '2.2.0'
     playServicesLocationVersion = '21.0.1'
