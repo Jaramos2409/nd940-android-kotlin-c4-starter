@@ -1,6 +1,7 @@
 package com.udacity.project4
 
 import android.Manifest
+import android.os.Build
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -39,16 +40,19 @@ class RemindersActivityEndToEndTest : KoinTest {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var fakeAuthenticationRepository: FakeAuthenticationRepository
+    private val listOfPermissions = mutableListOf<String>().apply {
+        add(Manifest.permission.ACCESS_FINE_LOCATION)
+        add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     @Rule
     @JvmField
-    var fineLocationPermissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION)
-
-    @Rule
-    @JvmField
-    var backgroundLocationPermissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    var grantPermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(*listOfPermissions.toTypedArray())
 
     @Before
     fun registerIdlingResource() {

@@ -3,6 +3,7 @@ package com.udacity.project4
 import android.os.Build
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -20,6 +21,8 @@ import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.getActivityReference
 import com.udacity.project4.util.monitorActivity
 import org.hamcrest.CoreMatchers.not
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
@@ -28,9 +31,19 @@ import org.koin.dsl.module
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class RemindersActivityPermissionsTest {
+class RemindersActivityPermissionsErrorTests {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
 
     // Testing Toasts on versions after Q is not possible at the moment so limiting to that SDK
     // version for now. See: https://github.com/android/android-test/issues/803
@@ -61,8 +74,3 @@ class RemindersActivityPermissionsTest {
     }
 
 }
-
-
-
-
-

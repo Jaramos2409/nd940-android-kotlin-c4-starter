@@ -12,7 +12,6 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.locationreminders.geofence.GeofenceManager
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.utils.PermissionUtils
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 
@@ -70,11 +69,4 @@ class SaveReminderFragment : BaseFragment() {
         _viewModel.onClear()
     }
 
-    private fun areLocationPermissionsGranted(): Boolean = PermissionUtils.arePermissionsGranted(
-        requireContext(),
-        listOf(
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    )
 }
