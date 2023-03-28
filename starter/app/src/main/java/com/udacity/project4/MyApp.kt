@@ -5,9 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import com.udacity.project4.authentication.AuthenticationDataSource
 import com.udacity.project4.authentication.AuthenticationRepository
 import com.udacity.project4.authentication.AuthenticationViewModel
+import com.udacity.project4.location.CheckLocationManager
+import com.udacity.project4.location.CheckLocationManagerInterface
+import com.udacity.project4.locationreminders.RemindersActivityViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
@@ -47,6 +52,9 @@ class MyApp : Application(), KoinComponent {
                     get()
                 )
             }
+            factory<CheckLocationManagerInterface> { (context: Context, requestDeviceLocationLauncher: ActivityResultLauncher<IntentSenderRequest>) ->
+                CheckLocationManager(context, requestDeviceLocationLauncher)
+            }
             single {
                 //This view model is declared singleton to be used across multiple fragments
                 SaveReminderViewModel(
@@ -56,6 +64,9 @@ class MyApp : Application(), KoinComponent {
             }
             viewModel {
                 AuthenticationViewModel(get())
+            }
+            viewModel {
+                RemindersActivityViewModel()
             }
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModel {

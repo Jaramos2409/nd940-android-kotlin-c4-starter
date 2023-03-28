@@ -2,45 +2,52 @@ package com.udacity.project4.locationreminders
 
 import android.Manifest
 import android.content.Intent
-import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.Priority
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.firebase.AuthenticationState
+import com.udacity.project4.location.CheckLocationManager
+import com.udacity.project4.location.CheckLocationManagerInterface
 import com.udacity.project4.locationreminders.geofence.GeofenceManager
 import com.udacity.project4.utils.PermissionUtils
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 /**
  * The RemindersActivity that holds the reminders fragments
  */
-class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
+class RemindersActivity : AppCompatActivity(R.layout.activity_reminders),
+    CheckLocationManager.LocationSettingsListener {
 
     private val authenticationViewModel by viewModel<AuthenticationViewModel>()
+    private val remindersActivityViewModel by viewModel<RemindersActivityViewModel>()
     private val geofenceManager: GeofenceManager by inject()
-
+    private val requestDeviceLocationLauncher =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+            checkLocationManager.checkDeviceLocationSettingsAndStartGeofence(this, false)
+        }
+    private val checkLocationManager: CheckLocationManagerInterface by inject {
+        parametersOf(
+            this,
+            requestDeviceLocationLauncher
+        )
+    }
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all { it.value }
             if (allGranted) {
                 Timber.i("Permissions were granted.")
-                checkDeviceLocationSettingsAndStartGeofence()
+                checkLocationManager.checkDeviceLocationSettingsAndStartGeofence(this)
             } else {
                 Timber.i("Permissions were not granted.")
                 Toast.makeText(
@@ -51,11 +58,6 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
             }
         }
 
-    private val requestDeviceLocationLauncher =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-            checkDeviceLocationSettingsAndStartGeofence(false)
-        }
-
     override fun onStart() {
         super.onStart()
         checkPermissionsAndStartGeofencing()
@@ -63,9 +65,15 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
 
     override fun onResume() {
         super.onResume()
+        checkLocationManager.registerLocationProviderChangedReceiver(this)
         if (areLocationAndOrNotificationPermissionsGranted()) {
             loadExistingGeofences()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        checkLocationManager.unregisterLocationProviderChangedReceiver()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +94,26 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
                 else -> Timber.e("New $authenticationState state that doesn't require any UI change")
             }
         }
+
+        remindersActivityViewModel.shouldShowLocationAlertDialog.observe(this)
+        { shouldShowAlertDialog ->
+            run {
+                if (shouldShowAlertDialog) {
+                    AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.location_required_error))
+                        .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                            checkLocationManager.checkDeviceLocationSettingsAndStartGeofence(this)
+                        }
+                        .setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.dismiss()
+                            remindersActivityViewModel.resetAlertDialogCheck()
+                        }
+                        .create()
+                        .show()
+                }
+            }
+
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -98,52 +126,13 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
-        val locationRequest = LocationRequest
-            .Builder(Priority.PRIORITY_LOW_POWER, 3600000L)
-            .build()
-
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val settingsClient = LocationServices.getSettingsClient(this)
-        val locationSettingsResponseTask =
-            settingsClient.checkLocationSettings(builder.build())
-        locationSettingsResponseTask.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException && resolve) {
-                try {
-                    requestDeviceLocationLauncher.launch(
-                        IntentSenderRequest.Builder(exception.resolution.intentSender).build()
-                    )
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    Timber.d("Error getting location settings resolution: " + sendEx.message)
-                }
-            } else {
-                AlertDialog.Builder(this)
-                    .setMessage(getString(R.string.location_required_error))
-                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                        checkDeviceLocationSettingsAndStartGeofence()
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .show()
-            }
-        }
-        locationSettingsResponseTask.addOnCompleteListener {
-            if (it.isSuccessful) {
-                Timber.i("Location settings are enabled.")
-                loadExistingGeofences()
-            }
-        }
-    }
-
     private fun loadExistingGeofences() {
         geofenceManager.addGeofencesFromDatabase()
     }
 
     private fun checkPermissionsAndStartGeofencing() {
         if (checkIfAllPermissionsApproved()) {
-            checkDeviceLocationSettingsAndStartGeofence()
+            checkLocationManager.checkDeviceLocationSettingsAndStartGeofence(this)
         } else {
             requestForegroundLocationAndNotificationPermissions()
         }
@@ -243,6 +232,14 @@ class RemindersActivity : AppCompatActivity(R.layout.activity_reminders) {
             listOfPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
 
         return listOfPermissions
+    }
+
+    override fun onLocationSettingsEnabled() {
+        loadExistingGeofences()
+    }
+
+    override fun onLocationSettingsFailed(exception: Exception) {
+        remindersActivityViewModel.showAlertDialog()
     }
 
 }
