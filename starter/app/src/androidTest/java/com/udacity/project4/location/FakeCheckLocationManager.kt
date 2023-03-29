@@ -1,8 +1,6 @@
-package com.udacity.project4
+package com.udacity.project4.location
 
 import android.content.Context
-import com.udacity.project4.location.CheckLocationManager
-import com.udacity.project4.location.CheckLocationManagerInterface
 
 class FakeCheckLocationManager(
     private val context: Context,

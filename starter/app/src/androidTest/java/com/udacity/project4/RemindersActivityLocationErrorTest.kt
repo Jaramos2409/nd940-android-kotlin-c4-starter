@@ -5,26 +5,19 @@ import android.content.Context
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.LargeTest
 import androidx.test.filters.MediumTest
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.SettingsClient
 import com.udacity.project4.authentication.AuthenticationDataSource
 import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
-import com.udacity.project4.location.CheckLocationManager
 import com.udacity.project4.location.CheckLocationManagerInterface
+import com.udacity.project4.location.FakeCheckLocationManager
 import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.util.DataBindingIdlingResource
@@ -37,10 +30,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.inject
 import org.koin.test.KoinTest
 import org.koin.test.inject
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
