@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.reminderslist
+package com.udacity.project4.locationreminders.savereminder
 
 import android.Manifest
 import android.os.Build
@@ -20,9 +20,6 @@ import androidx.test.rule.GrantPermissionRule
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationDataSource
 import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
-import com.udacity.project4.locationreminders.savereminder.SaveReminderFragment
-import com.udacity.project4.locationreminders.savereminder.SaveReminderFragmentDirections
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.getActivityReference
 import com.udacity.project4.util.monitorFragment
