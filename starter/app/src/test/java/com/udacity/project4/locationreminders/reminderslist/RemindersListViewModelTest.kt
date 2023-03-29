@@ -5,7 +5,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.udacity.project4.locationreminders.MainCoroutineRule
-import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.data.FakeReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,22 +37,22 @@ class RemindersListViewModelTest {
 
     private lateinit var remindersListViewModel: RemindersListViewModel
 
-    private lateinit var fakeDataSource: FakeDataSource
+    private lateinit var fakeReminderDataSource: FakeReminderDataSource
 
     @Before
     fun setup() = runBlocking {
-        fakeDataSource = FakeDataSource()
+        fakeReminderDataSource = FakeReminderDataSource()
 
         remindersListViewModel = RemindersListViewModel(
             getApplicationContext(),
-            fakeDataSource
+            fakeReminderDataSource
         )
     }
 
     @After
     fun tearDownAndCleanup() = runBlocking {
         stopKoin()
-        fakeDataSource.deleteAllReminders()
+        fakeReminderDataSource.deleteAllReminders()
     }
 
     @Test
@@ -65,7 +65,7 @@ class RemindersListViewModelTest {
         val id = UUID.randomUUID().toString()
 
         // Setup FakeDataSource
-        fakeDataSource.saveReminder(
+        fakeReminderDataSource.saveReminder(
             ReminderDTO(
                 title,
                 description,
@@ -119,7 +119,7 @@ class RemindersListViewModelTest {
         val id = UUID.randomUUID().toString()
 
         // Setup FakeDataSource
-        fakeDataSource.saveReminder(
+        fakeReminderDataSource.saveReminder(
             ReminderDTO(
                 title,
                 description,
@@ -165,7 +165,7 @@ class RemindersListViewModelTest {
             val id = UUID.randomUUID().toString()
 
             // Setup FakeDataSource
-            fakeDataSource.saveReminder(
+            fakeReminderDataSource.saveReminder(
                 ReminderDTO(
                     title,
                     description,

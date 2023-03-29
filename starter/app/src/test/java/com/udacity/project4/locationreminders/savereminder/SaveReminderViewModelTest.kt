@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.MainCoroutineRule
-import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.data.FakeReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.locationreminders.getOrAwaitValue
@@ -43,22 +43,22 @@ class SaveReminderViewModelTest {
 
     private lateinit var saverReminderViewModel: SaveReminderViewModel
 
-    private lateinit var fakeDataSource: FakeDataSource
+    private lateinit var fakeReminderDataSource: FakeReminderDataSource
 
     @Before
     fun setup() = runBlocking {
-        fakeDataSource = FakeDataSource()
+        fakeReminderDataSource = FakeReminderDataSource()
 
         saverReminderViewModel = SaveReminderViewModel(
             ApplicationProvider.getApplicationContext(),
-            fakeDataSource
+            fakeReminderDataSource
         )
     }
 
     @After
     fun tearDownAndCleanup() = runBlocking {
         stopKoin()
-        fakeDataSource.deleteAllReminders()
+        fakeReminderDataSource.deleteAllReminders()
     }
 
     @Test
@@ -138,7 +138,7 @@ class SaveReminderViewModelTest {
         saverReminderViewModel.validateAndSaveReminder(reminderData)
         advanceUntilIdle()
 
-        val getSavedReminder = fakeDataSource.getReminder(reminderDTO.id)
+        val getSavedReminder = fakeReminderDataSource.getReminder(reminderDTO.id)
 
         assertThat(getSavedReminder, instanceOf(Result.Success::class.java))
         assertThat((getSavedReminder as Result.Success).data, `is`(reminderDTO))
@@ -167,7 +167,7 @@ class SaveReminderViewModelTest {
             saverReminderViewModel.validateAndSaveReminder(reminderData)
             advanceUntilIdle()
 
-            val getSavedReminder = fakeDataSource.getReminder(reminderDTO.id)
+            val getSavedReminder = fakeReminderDataSource.getReminder(reminderDTO.id)
 
             assertThat(getSavedReminder, instanceOf(Result.Error::class.java))
             assertThat(
