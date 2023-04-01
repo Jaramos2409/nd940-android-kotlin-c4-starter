@@ -28,6 +28,8 @@ import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -106,6 +108,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         this.googleMap.setContentDescription(getString(R.string.map_has_loaded))
         setMapStyle(this.googleMap)
         setPoiClick(this.googleMap)
+        setMapLongClick(this.googleMap)
 
         _viewModel.getSelectedPoi()?.let {
             val poi = _viewModel.getSelectedPoi()
@@ -226,6 +229,39 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 _viewModel.getSelectedMarker()?.showInfoWindow()
             }
         }
+    }
+
+    private fun setMapLongClick(map: GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            val locationTitle = "${truncateCoordinate(latLng.latitude, 4)}, ${
+                truncateCoordinate(
+                    latLng.longitude,
+                    4
+                )
+            }"
+
+            val newLocationReminderMarker = map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(locationTitle)
+            )
+
+            if (newLocationReminderMarker != null) {
+                _viewModel.getSelectedMarker()?.remove()
+                _viewModel.setReminderLocationData(
+                    selectedMarker = newLocationReminderMarker,
+                    selectedLocationName = locationTitle,
+                    selectedLatitude = latLng.latitude,
+                    selectedLongitude = latLng.longitude
+                )
+                _viewModel.getSelectedMarker()?.showInfoWindow()
+            }
+        }
+    }
+
+    private fun truncateCoordinate(value: Double, decimalPlaces: Int): Double {
+        val factor = 10.0.pow(decimalPlaces.toDouble())
+        return (value.times(factor)).roundToInt() / factor
     }
 
 }

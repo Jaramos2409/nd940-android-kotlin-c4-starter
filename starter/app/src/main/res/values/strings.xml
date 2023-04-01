@@ -53,6 +53,6 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="description">Description:</string>
     <string name="directions">Directions:</string>
-    <string name="map_directions_message">To select a location for your reminder tap on any landmark, point of interest or existing marker.</string>
+    <string name="map_directions_message">To select a location for your reminder tap on any landmark, point of interest or existing marker. You can also long press on any place in the map in order to set down a marker for any location.</string>
     <string name="map_has_loaded">Map has loaded</string>
 </resources>
