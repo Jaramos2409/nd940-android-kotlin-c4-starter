@@ -56,7 +56,6 @@ class RemindersLocalRepositoryTest {
         )
 
         val actualListOfRemindersResult = remindersLocalRepository.getReminders()
-//        advanceUntilIdle()
 
         assertThat(actualListOfRemindersResult, instanceOf(Result.Success::class.java))
         assertThat(
