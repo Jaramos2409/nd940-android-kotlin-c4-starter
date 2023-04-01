@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.collection.IsEmptyCollection.empty
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -86,7 +87,7 @@ class RemindersLocalRepositoryTest {
 
     @Test
     fun saveTwoReminderAndGetAllReminders() = runTest {
-        val actualListOfReminders = mutableListOf<ReminderDTO>()
+        val expectedListOfReminders = mutableListOf<ReminderDTO>()
 
         val reminderOne = ReminderDTO(
             "Wrestle Kingdom",
@@ -94,7 +95,7 @@ class RemindersLocalRepositoryTest {
             "Tokyo Dome",
             35.719448,
             139.749969
-        ).apply { actualListOfReminders.add(this) }
+        ).apply { expectedListOfReminders.add(this) }
         remindersLocalRepository.saveReminder(reminderOne)
 
         val reminderTwo = ReminderDTO(
@@ -103,14 +104,13 @@ class RemindersLocalRepositoryTest {
             "Nippon Budokan",
             35.6933,
             139.7497
-        ).apply { actualListOfReminders.add(this) }
+        ).apply { expectedListOfReminders.add(this) }
         remindersLocalRepository.saveReminder(reminderTwo)
-
 
         val result = remindersLocalRepository.getReminders()
 
         assertThat(result, instanceOf(Result.Success::class.java))
-        assertThat((result as Result.Success).data, `is`(actualListOfReminders))
+        assertThat((result as Result.Success).data, `is`(expectedListOfReminders))
     }
 
     @Test
@@ -118,7 +118,7 @@ class RemindersLocalRepositoryTest {
         val result = remindersLocalRepository.getReminders()
 
         assertThat(result, instanceOf(Result.Success::class.java))
-        assertThat((result as Result.Success).data, `is`(mutableListOf()))
+        assertThat((result as Result.Success).data, `is`(empty()))
     }
 
     @Test
@@ -158,7 +158,7 @@ class RemindersLocalRepositoryTest {
         val result = remindersLocalRepository.getReminders()
 
         assertThat(result, instanceOf(Result.Success::class.java))
-        assertThat((result as Result.Success).data, `is`(mutableListOf()))
+        assertThat((result as Result.Success).data, `is`(empty()))
     }
 
     @Test
@@ -188,6 +188,6 @@ class RemindersLocalRepositoryTest {
         val result = remindersLocalRepository.getReminders()
 
         assertThat(result, instanceOf(Result.Success::class.java))
-        assertThat((result as Result.Success).data, `is`(mutableListOf()))
+        assertThat((result as Result.Success).data, `is`(empty()))
     }
 }

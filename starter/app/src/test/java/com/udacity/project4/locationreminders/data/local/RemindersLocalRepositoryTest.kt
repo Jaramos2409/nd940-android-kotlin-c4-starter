@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.data.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.FakeRemindersDao
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
@@ -23,6 +24,7 @@ import java.util.*
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
+@MediumTest
 class RemindersLocalRepositoryTest {
 
     @ExperimentalCoroutinesApi
