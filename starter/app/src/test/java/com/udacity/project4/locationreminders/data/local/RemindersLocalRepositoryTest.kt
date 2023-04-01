@@ -1,6 +1,8 @@
 package com.udacity.project4.locationreminders.data.local
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.data.FakeRemindersDao
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
@@ -12,16 +14,23 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.collection.IsEmptyCollection.empty
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.mockito.Mockito.*
 import java.util.*
 
-
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class RemindersLocalRepositoryTest {
+
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @After
     fun cleanup() {
@@ -47,6 +56,7 @@ class RemindersLocalRepositoryTest {
         )
 
         val actualListOfRemindersResult = remindersLocalRepository.getReminders()
+//        advanceUntilIdle()
 
         assertThat(actualListOfRemindersResult, instanceOf(Result.Success::class.java))
         assertThat(

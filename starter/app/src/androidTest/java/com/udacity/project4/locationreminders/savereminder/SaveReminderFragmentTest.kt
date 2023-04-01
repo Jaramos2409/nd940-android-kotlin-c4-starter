@@ -23,6 +23,7 @@ import com.udacity.project4.authentication.data.local.FakeAuthenticationReposito
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.getActivityReference
 import com.udacity.project4.util.monitorFragment
+import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -67,11 +68,13 @@ class SaveReminderFragmentTest : KoinTest {
 
     @Before
     fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
     }
 
     @After
     fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 

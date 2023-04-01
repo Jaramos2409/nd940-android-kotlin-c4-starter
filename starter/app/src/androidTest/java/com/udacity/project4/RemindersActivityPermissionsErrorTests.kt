@@ -20,6 +20,7 @@ import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.getActivityReference
 import com.udacity.project4.util.monitorActivity
+import com.udacity.project4.utils.EspressoIdlingResource
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -37,11 +38,13 @@ class RemindersActivityPermissionsErrorTests {
 
     @Before
     fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
     }
 
     @After
     fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 

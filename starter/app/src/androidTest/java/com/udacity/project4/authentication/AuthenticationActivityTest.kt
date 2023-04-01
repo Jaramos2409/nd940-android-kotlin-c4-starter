@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.app.Instrumentation
 import android.content.Intent
+import android.os.Build
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -26,6 +27,7 @@ import com.udacity.project4.RoutingActivity
 import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
+import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
@@ -43,15 +45,19 @@ class AuthenticationActivityTest {
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var fakeAuthenticationRepository: FakeAuthenticationRepository
 
-    @Rule
-    @JvmField
-    var fineLocationPermissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION)
+    private val listOfPermissions = mutableListOf<String>().apply {
+        add(Manifest.permission.ACCESS_FINE_LOCATION)
+        add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     @Rule
     @JvmField
-    var backgroundLocationPermissionRule: GrantPermissionRule =
-        GrantPermissionRule.grant(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    var grantPermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(*listOfPermissions.toTypedArray())
 
     @get:Rule
     val intentsTestRule = IntentsRule()
@@ -63,11 +69,13 @@ class AuthenticationActivityTest {
 
     @Before
     fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().register(dataBindingIdlingResource)
     }
 
     @After
     fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
@@ -128,7 +136,7 @@ class AuthenticationActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(click())
 
-            onView(withText("Directions"))
+            onView(withText(R.string.sign_in_unsuccessful))
                 .inRoot(isDialog())
                 .check(matches(isDisplayed()))
         }
