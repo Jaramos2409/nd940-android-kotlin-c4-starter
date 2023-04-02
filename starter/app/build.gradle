@@ -119,6 +119,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
     androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
     androidTestImplementation("io.insert-koin:koin-test:$koinVersion") { exclude group: 'org.mockito' }
+    androidTestImplementation "androidx.navigation:navigation-testing:$navigationVersion"
 
     //Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesLocationVersion"

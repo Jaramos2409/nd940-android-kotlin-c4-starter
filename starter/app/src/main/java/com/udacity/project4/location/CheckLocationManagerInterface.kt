@@ -1,7 +1,7 @@
 package com.udacity.project4.location
 
 interface CheckLocationManagerInterface {
-    fun checkDeviceLocationSettingsAndStartGeofence(
+    fun checkDeviceLocationSettings(
         listener: CheckLocationManager.LocationSettingsListener,
         resolve: Boolean = true
     )

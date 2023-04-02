@@ -27,7 +27,7 @@ class CheckLocationManager(
     private val locationProviderChangedReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == LocationManager.PROVIDERS_CHANGED_ACTION) {
-                listener?.let { checkDeviceLocationSettingsAndStartGeofence(it) }
+                listener?.let { checkDeviceLocationSettings(it) }
             }
         }
     }
@@ -45,7 +45,7 @@ class CheckLocationManager(
         listener = null
     }
 
-    override fun checkDeviceLocationSettingsAndStartGeofence(listener: LocationSettingsListener, resolve: Boolean) {
+    override fun checkDeviceLocationSettings(listener: LocationSettingsListener, resolve: Boolean) {
         val locationRequest = LocationRequest
             .Builder(Priority.PRIORITY_LOW_POWER, 3600000L)
             .build()

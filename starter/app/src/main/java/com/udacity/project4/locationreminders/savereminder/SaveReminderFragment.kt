@@ -7,16 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.udacity.project4.R
-import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
+import com.udacity.project4.base.SaveBaseFragment
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.locationreminders.geofence.GeofenceManager
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 
-class SaveReminderFragment : BaseFragment() {
-    //Get the view model this time as a single to be shared with the another fragment
+class SaveReminderFragment : SaveBaseFragment() {
+
     override val _viewModel: SaveReminderViewModel by inject()
     private val geofenceManager: GeofenceManager by inject()
     private lateinit var binding: FragmentSaveReminderBinding
@@ -25,6 +25,8 @@ class SaveReminderFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_save_reminder, container, false)
 
@@ -45,6 +47,12 @@ class SaveReminderFragment : BaseFragment() {
         }
 
         binding.saveReminder.setOnClickListener {
+            if (!checkIfAllPermissionsApproved()) {
+                requestForegroundLocationAndNotificationPermissions()
+            }
+
+            checkLocationSettings()
+
             val reminderDataItem = ReminderDataItem(
                 title = _viewModel.reminderTitle.value,
                 description = _viewModel.reminderDescription.value,
@@ -65,7 +73,6 @@ class SaveReminderFragment : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //make sure to clear the view model after destroy, as it's a single view model.
         _viewModel.onClear()
     }
 

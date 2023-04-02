@@ -1,29 +1,29 @@
-package com.udacity.project4
+package com.udacity.project4.locationreminders.savereminder
 
 import android.Manifest
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.rule.GrantPermissionRule
+import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationDataSource
 import com.udacity.project4.authentication.data.local.FakeAuthenticationRepository
 import com.udacity.project4.location.CheckLocationManagerInterface
 import com.udacity.project4.location.FakeCheckLocationManager
-import com.udacity.project4.locationreminders.RemindersActivity
-import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.util.DataBindingIdlingResource
-import com.udacity.project4.util.monitorActivity
+import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.EspressoIdlingResource
-import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,12 +32,10 @@ import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import org.koin.test.inject
-import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class RemindersActivityLocationErrorTest : KoinTest {
+class SaveReminderFragmentLocationErrorTest : KoinTest {
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private val listOfPermissions = mutableListOf<String>().apply {
@@ -66,30 +64,40 @@ class RemindersActivityLocationErrorTest : KoinTest {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-    @After
-    fun cleanup() {
-        runBlocking {
-            inject<ReminderDataSource>().value.deleteAllReminders()
-        }
-    }
-
     @Test
     fun location_services_alert_dialog_should_appear_if_check_location_manager_sense_gps_is_off() {
         loadKoinModules(
             module {
                 single<AuthenticationDataSource> { FakeAuthenticationRepository(shouldAuthenticate = true) }
-                factory<CheckLocationManagerInterface> { (context: Context, _: ActivityResultLauncher<IntentSenderRequest>) ->
-                    FakeCheckLocationManager(context)
+                single {
+                    SaveReminderViewModel(
+                        get(),
+                        get()
+                    ).apply {
+                        setReminderLocationData(
+                            selectedLocationName = "Tokyo Dome",
+                            selectedLatitude = 35.719448,
+                            selectedLongitude = 139.749969
+                        )
+                    }
+                }
+                factory<CheckLocationManagerInterface> { (_: Context, _: ActivityResultLauncher<IntentSenderRequest>) ->
+                    FakeCheckLocationManager()
                 }
             }
         )
 
-        ActivityScenario.launch(RemindersActivity::class.java).use {
-            dataBindingIdlingResource.monitorActivity(it)
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
 
-            Espresso.onView(ViewMatchers.withText(R.string.location_required_error))
-                .inRoot(RootMatchers.isDialog())
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        }
+        dataBindingIdlingResource.monitorFragment(scenario)
+
+        // Submit to trigger location settings check
+        onView(withId(R.id.saveReminder))
+            .check(matches(isDisplayed()))
+            .perform(ViewActions.click())
+
+        onView(withText(R.string.location_required_error))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 }

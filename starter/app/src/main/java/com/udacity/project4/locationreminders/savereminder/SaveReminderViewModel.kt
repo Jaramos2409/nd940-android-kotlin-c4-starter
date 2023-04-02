@@ -30,6 +30,14 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
     val longitude: LiveData<Double?>
         get() = _longitude
 
+    private val _shouldShowLocationAlertDialog = MutableLiveData<Boolean>()
+    val shouldShowLocationAlertDialog: LiveData<Boolean>
+        get() = _shouldShowLocationAlertDialog
+
+    init {
+        _shouldShowLocationAlertDialog.value = false
+    }
+
     /**
      * Clear the live data objects to start fresh next time the view model gets called
      */
@@ -108,6 +116,14 @@ class SaveReminderViewModel(val app: Application, private val dataSource: Remind
         reminderSelectedLocationStr.value = selectedLocationName
         _latitude.value = selectedLatitude
         _longitude.value = selectedLongitude
+    }
+
+    fun showAlertDialog() {
+        _shouldShowLocationAlertDialog.value = true
+    }
+
+    fun resetAlertDialogCheck() {
+        _shouldShowLocationAlertDialog.value = false
     }
 
 }

@@ -20,8 +20,8 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.udacity.project4.LocationReminderLocationFeatureDirectionsAlertDialog
 import com.udacity.project4.R
-import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
+import com.udacity.project4.base.SaveBaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
@@ -31,7 +31,7 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
+class SelectLocationFragment : SaveBaseFragment(), OnMapReadyCallback {
 
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSelectLocationBinding
@@ -39,9 +39,19 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private lateinit var locationReminderLocationFeatureDirectionsAlertDialog: LocationReminderLocationFeatureDirectionsAlertDialog
 
+    override fun onStart() {
+        super.onStart()
+        if (!checkIfAllPermissionsApproved()) {
+            requestForegroundLocationAndNotificationPermissions()
+        }
+        checkLocationSettings()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        super.onCreateView(inflater, container, savedInstanceState)
+
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
 
@@ -233,10 +243,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun setMapLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
-            val locationTitle = "${truncateCoordinate(latLng.latitude, 4)}, ${
+            val locationTitle = "${truncateCoordinate(latLng.latitude)}, ${
                 truncateCoordinate(
-                    latLng.longitude,
-                    4
+                    latLng.longitude
                 )
             }"
 
@@ -259,8 +268,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun truncateCoordinate(value: Double, decimalPlaces: Int): Double {
-        val factor = 10.0.pow(decimalPlaces.toDouble())
+    private fun truncateCoordinate(value: Double): Double {
+        val factor = 10.0.pow(4.0)
         return (value.times(factor)).roundToInt() / factor
     }
 

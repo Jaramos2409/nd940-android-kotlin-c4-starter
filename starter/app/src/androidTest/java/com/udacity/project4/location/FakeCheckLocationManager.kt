@@ -1,20 +1,15 @@
 package com.udacity.project4.location
 
-import android.content.Context
-
 class FakeCheckLocationManager(
-    private val context: Context,
     private var locationSettingsEnabled: Boolean = false
 ) : CheckLocationManagerInterface {
 
-    override fun checkDeviceLocationSettingsAndStartGeofence(
+    override fun checkDeviceLocationSettings(
         listener: CheckLocationManager.LocationSettingsListener,
         resolve: Boolean
     ) {
         if (!locationSettingsEnabled) {
-            (context as CheckLocationManager.LocationSettingsListener).onLocationSettingsFailed(
-                Exception("Location settings are disabled")
-            )
+            listener.onLocationSettingsFailed(Exception("Location settings are disabled"))
         }
     }
 
