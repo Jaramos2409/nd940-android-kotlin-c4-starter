@@ -1,8 +1,8 @@
 package com.udacity.project4.utils
 
 import androidx.test.espresso.idling.CountingIdlingResource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 object EspressoIdlingResource {
 
@@ -23,10 +23,13 @@ object EspressoIdlingResource {
 
 }
 
-suspend inline fun <T> wrapEspressoIdlingResource(crossinline function: suspend () -> T): T {
+suspend inline fun <T> wrapEspressoIdlingResource(
+    coroutineContext: CoroutineContext,
+    crossinline function: suspend () -> T
+): T {
     EspressoIdlingResource.increment() // Set app as busy.
     return try {
-        withContext(Dispatchers.Main) {
+        withContext(coroutineContext) {
             function()
         }
     } finally {
