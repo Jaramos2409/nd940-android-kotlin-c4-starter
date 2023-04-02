@@ -36,7 +36,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
     override fun onReceive(context: Context, intent: Intent) = goAsync {
         Timber.i("Inside of onReceiver")
-        //TODO: implement the onReceive method to receive the geofencing events at the background
         if (intent.action == ACTION_GEOFENCE_EVENT) {
             Timber.i("Inside of ACTION_GEOFENCE_EVENT")
 
@@ -50,25 +49,24 @@ class GeofenceBroadcastReceiver : BroadcastReceiver(), KoinComponent {
 
             if (geofencingEvent?.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 Timber.v(context.getString(R.string.geofence_entered))
-                val fenceId = when {
-                    geofencingEvent.triggeringGeofences?.isNotEmpty() == true ->
-                        geofencingEvent.triggeringGeofences!![0].requestId
-                    else -> {
-                        Timber.e("No Geofence Trigger Found! Abort mission!")
-                        return@goAsync
-                    }
-                }
 
-                when (val getReminderResult = remindersLocalRepository.getReminder(fenceId)) {
-                    is Result.Error -> {
-                        Timber.e(getReminderResult.message)
-                        return@goAsync
-                    }
-                    is Result.Success -> {
-                        NotificationUtils.sendReminderNotification(
-                            context,
-                            getReminderResult.data.asDomainModel()
-                        )
+                if (!geofencingEvent.triggeringGeofences.isNullOrEmpty()) {
+                    geofencingEvent.triggeringGeofences?.forEach { triggeredGeofence ->
+                        run {
+                            when (val getReminderResult =
+                                remindersLocalRepository.getReminder(triggeredGeofence.requestId)) {
+                                is Result.Error -> {
+                                    Timber.e(getReminderResult.message)
+                                    return@goAsync
+                                }
+                                is Result.Success -> {
+                                    NotificationUtils.sendReminderNotification(
+                                        context,
+                                        getReminderResult.data.asDomainModel()
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

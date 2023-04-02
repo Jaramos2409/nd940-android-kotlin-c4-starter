@@ -23,7 +23,7 @@
             android:id="@+id/location_reminder_save_button"
             android:background="@color/blood_orange"
             android:layout_width="match_parent"
-            android:layout_margin="30dp"
+            android:layout_margin="@dimen/location_reminder_button_margin"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:text="@string/save" />
