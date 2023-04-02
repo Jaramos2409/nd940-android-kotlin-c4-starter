@@ -3,13 +3,10 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
@@ -24,6 +21,7 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.base.SaveBaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.utils.PermissionUtils
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -112,7 +110,6 @@ class SelectLocationFragment : SaveBaseFragment(), OnMapReadyCallback {
             NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         this.googleMap.setContentDescription(getString(R.string.map_has_loaded))
@@ -143,43 +140,41 @@ class SelectLocationFragment : SaveBaseFragment(), OnMapReadyCallback {
             }
         }
 
-        ifLocationPermissionsAreGranted {
-            this.googleMap.isMyLocationEnabled = true
-
-            val locationManager = requireContext().getSystemService<LocationManager>()
-            val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-
-            location?.let {
-                this.googleMap.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            location.latitude,
-                            location.longitude
-                        ), 15f
-                    )
-                )
-            }
-        }
+        setLocationOnMap()
 
         locationReminderLocationFeatureDirectionsAlertDialog.showIfNecessary()
     }
 
+    @SuppressLint("MissingPermission")
+    private fun setLocationOnMap() = ifLocationPermissionsAreGranted {
+        this.googleMap.isMyLocationEnabled = true
+
+        val locationManager = requireContext().getSystemService<LocationManager>()
+        val location = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+        location?.let {
+            this.googleMap.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        location.latitude,
+                        location.longitude
+                    ), 15f
+                )
+            )
+        }
+    }
+
     private fun ifLocationPermissionsAreGranted(function: () -> Unit) {
-        if (ActivityCompat.checkSelfPermission(
+        if (PermissionUtils.hasPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            )
+            && PermissionUtils.hasPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            )
         ) {
             function()
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Enable location permissions to enhance this feature.",
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
 
@@ -271,6 +266,16 @@ class SelectLocationFragment : SaveBaseFragment(), OnMapReadyCallback {
     private fun truncateCoordinate(value: Double): Double {
         val factor = 10.0.pow(4.0)
         return (value.times(factor)).roundToInt() / factor
+    }
+
+    override fun onLocationSettingsEnabled() {
+        super.onLocationSettingsEnabled()
+        setLocationOnMap()
+    }
+
+    override fun onPermissionGranted() {
+        super.onPermissionGranted()
+        setLocationOnMap()
     }
 
 }

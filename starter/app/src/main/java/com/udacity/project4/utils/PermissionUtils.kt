@@ -10,6 +10,11 @@ import androidx.core.content.ContextCompat
 
 object PermissionUtils {
 
+    interface PermissionsListener {
+        fun onPermissionGranted()
+        fun onPermissionNotGranted()
+    }
+
     fun hasPermission(context: Context, permission: String): Boolean {
         return ContextCompat.checkSelfPermission(
             context,

@@ -19,7 +19,7 @@ import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 abstract class SaveBaseFragment : BaseFragment(),
-    CheckLocationManager.LocationSettingsListener {
+    CheckLocationManager.LocationSettingsListener, PermissionUtils.PermissionsListener {
 
     abstract override val _viewModel: SaveReminderViewModel
 
@@ -27,14 +27,9 @@ abstract class SaveBaseFragment : BaseFragment(),
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all { it.value }
             if (allGranted) {
-                Timber.i("Permissions were granted.")
+                onPermissionGranted()
             } else {
-                Timber.i("Permissions were not granted.")
-                Toast.makeText(
-                    requireContext(),
-                    R.string.feature_may_not_work_properly,
-                    Toast.LENGTH_LONG
-                ).show()
+                onPermissionNotGranted()
             }
         }
 
@@ -183,5 +178,18 @@ abstract class SaveBaseFragment : BaseFragment(),
 
     override fun onLocationSettingsFailed(exception: Exception) {
         _viewModel.showAlertDialog()
+    }
+
+    override fun onPermissionGranted() {
+        Timber.i("Permissions were granted.")
+    }
+
+    override fun onPermissionNotGranted() {
+        Timber.i("Permissions were not granted.")
+        Toast.makeText(
+            requireContext(),
+            R.string.feature_may_not_work_properly,
+            Toast.LENGTH_LONG
+        ).show()
     }
 }
